@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Navigate, BrowserRouter, Routes, Route } from 'react-router-dom'
 import axios from 'axios';
 
 // components
 import Home from './components/Home'
+import Share from './components/Share'
 
 const getParamsAuth = (hash) => {
   const removeHashtag = hash.slice(1)
@@ -24,21 +25,34 @@ const App = () => {
       let accessToken = getParamsAuth(window.location.hash)
       localStorage.clear()
       localStorage.setItem('accessToken', accessToken)
+      setToken(accessToken)
     }
   }, [])
 
 
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path='/'
-            element={<Home client_id={process.env.REACT_APP_CLIENT_ID} redirect_uri={process.env.REACT_APP_REDIRECT_URI} scopes={SCOPES_URL_PARAM}/>} 
-          />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            token ? (
+              <Navigate to="/share" />
+            ) : (
+              <Home client_id={process.env.REACT_APP_CLIENT_ID} redirect_uri={process.env.REACT_APP_REDIRECT_URI} scopes={SCOPES_URL_PARAM}/>
+            )
+          } 
+        />
+        <Route
+          path='/share'
+          element={ token ? (
+            <Share />
+          ) : (
+            <Navigate to="/" />
+          )}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
