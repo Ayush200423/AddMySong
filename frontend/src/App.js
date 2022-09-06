@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { Navigate, BrowserRouter, Routes, Route } from 'react-router-dom'
-import axios from 'axios';
 
 // components
 import Home from './components/Home'
@@ -15,7 +14,7 @@ const getParamsAuth = (hash) => {
 
 const App = () => {
   const SPACE_DELIMITER = "%20";
-  const SCOPES = ["playlist-modify-public", "user-read-recently-played"];
+  const SCOPES = ["playlist-modify-public", "playlist-modify-private", "user-read-recently-played"];
   const SCOPES_URL_PARAM = SCOPES.join(SPACE_DELIMITER);
 
   const [token, setToken] = useState("")
@@ -46,7 +45,7 @@ const App = () => {
         <Route
           path='/share'
           element={ token ? (
-            <Share />
+            <Share token={token}/>
           ) : (
             <Navigate to="/" />
           )}
